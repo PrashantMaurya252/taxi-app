@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Alert, Image, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {ReactNativeModal} from 'react-native-modal'
+import { fetchAPI } from "@/lib/fetch";
 
 const SignUp = () => {
   const { isLoaded, signUp, setActive } = useSignUp()
@@ -62,6 +63,15 @@ const SignUp = () => {
       // and redirect the user
       if (signUpAttempt.status === 'complete') {
         // TODO:Create a database user!
+
+        await fetchAPI("/(api)/user",{
+          method:"POST",
+          body:JSON.stringify({
+            name:form.name,
+            email:form.email,
+            clerkId:signUpAttempt.createdUserId,
+          }),
+        });
 
         await setActive({ session: signUpAttempt.createdSessionId })
         setVerification({...verification,state:"success"})
